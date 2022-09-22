@@ -3,6 +3,7 @@ using JobPortal.Service.Roles;
 using Jobportel.Api.Controllers;
 using Jobportel.Model;
 using Jobportel.Service.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -67,6 +68,35 @@ namespace JobPortal.Api.Controllers.Account
                 });
             }
             return Unauthorized(new Response { StatusCode = StatusCodes.Status401Unauthorized, Message = "Invalid Email or password" });
+        }
+
+
+        [HttpPost]
+        [Route("ForgotPassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            var user = await _userService.ForgotPassword(email);
+            if (user == true)
+            {
+
+                return OkResponse("Otp sent to the register email address..", user);
+            }
+            return NotFoundResponse("Incorrect Details..", user);
+        }
+
+        [HttpPost]
+        [Route("ResetPassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(int otp, string newPassword, string confirmPassword)
+        {
+            var user = await _userService.ResetPassword(otp, newPassword, confirmPassword);
+            if (user != null)
+            {
+                return OkResponse("Password updated successfully..", user);
+
+            }
+            return BadResponse("Incorrect Details..", user);
         }
     }
 }

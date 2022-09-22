@@ -20,21 +20,29 @@ namespace JobPortal.Api.Controllers.Applicants
             _applicantService = applicant;
         }
 
-        [HttpGet("Applicant")]
-        public async Task<IActionResult> GetRoles()
+        [HttpGet("Applicants")]
+        public async Task<IActionResult> GetApplicant()
         {
-            var Jobs = await _applicantService.GetAll();
-            return OkResponse("Success", Jobs);
+            var applicants = await _applicantService.GetAll();
+            return OkResponse("Success", applicants);
         }
 
-        [HttpPost("Applicant/{id}")]
+        [HttpGet("Appliedjob")]
+        public async Task<IActionResult> Appliedjob()
+        {
+            var jobApplieds = await _applicantService.AppliedJobs(UserId);
+            return OkResponse("Success", jobApplieds);
+        }
+
+
+        [HttpPost("{id}")]
         public async Task<IActionResult> GetApplicantById(int Id)
         {
             Applicant applicant = await _applicantService.GetById(Id);
             return OkResponse("Sucess", applicant);
         }
 
-        [HttpPost("Apply/Job")]
+        [HttpPost("ApplyJob")]
         public async Task<IActionResult> ApplyJob(Applicant applicant)
         {
             applicant.AppliedBy = UserId;
@@ -43,14 +51,14 @@ namespace JobPortal.Api.Controllers.Applicants
             return OkResponse("Sucess", applicants);
         }
 
-        [HttpPut("UpdateRole")]
-        public async Task<IActionResult> UpdateRole(Applicant applicant)
+        [HttpPut("Applicant/{id}")]
+        public async Task<IActionResult> UpdateRole(int id, [FromBody] Applicant applicant)
         {
            var applicants= await _applicantService.Update(applicant);
             return OkResponse("Sucess", applicants);
         }
 
-        [HttpDelete("DeleteUser")]
+        [HttpDelete("Applicant/{id}")]
         public async Task<IActionResult> DeleteRole(int Id)
         {
             await _applicantService.Delete(Id);

@@ -1,4 +1,5 @@
-﻿using Jobportel.Data.Model;
+﻿using JobPortal.Model.Model;
+using Jobportel.Data.Model;
 using Jobportel.Model;
 using Jobportel.Service.Users;
 using Microsoft.AspNetCore.Http;
@@ -20,36 +21,36 @@ namespace Jobportel.Api.Controllers.Users
             _user = user;       
         }
 
-        [HttpGet("Users")]
-        public async Task<IActionResult> GetUsers()
+        [HttpPost("Users")]
+        public async Task<IActionResult> GetUsers([FromBody] Pagination pagination)
         {
-            var user = await _user.GetAll();
+            var user = await _user.GetAll(pagination);
             return OkResponse( "Success",user);
         }
 
 
         [HttpPost("User/{id}")]
-        public async Task<IActionResult> GetUserById(int Id)
+        public async Task<IActionResult> GetUserById(int id)
         {
-            User user = await _user.GetById(Id);
+            User user = await _user.GetById(id);
             return OkResponse("Sucess", user);
         }
 
-        [HttpPost("AddUser")]
+        [HttpPost("User")]
         public async Task<IActionResult> AddUser(User user)
         {
             await _user.Add(user);
             return OkResponse("Sucess", user);
         }
 
-        [HttpPut("UpdateUser")]
-        public async Task<IActionResult> UpdateUser(User user)
+        [HttpPut("User/{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
         {
             await _user.Update(user);
             return OkResponse("Sucess", user);
         }
 
-        [HttpDelete("DeleteUser")]
+        [HttpDelete("User/{id}")]
         public async Task<IActionResult> DeleteUser(int Id)
         {
             await _user.Delete(Id);

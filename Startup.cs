@@ -1,10 +1,15 @@
 using DevRequired.Service;
+using JobPortal.Api.Filter;
 using JobPortal.Data.Interfaces.Applicants;
+using JobPortal.Data.Interfaces.Forgetpassword;
 using JobPortal.Data.Interfaces.Roles;
 using JobPortal.Data.Repositories.Applicants;
+using JobPortal.Data.Repositories.ForgetPassword;
 using JobPortal.Data.Repositories.Jobs;
 using JobPortal.Data.Repositories.Roles;
+using JobPortal.Service.Admin;
 using JobPortal.Service.Applicants;
+using JobPortal.Service.ForgetPassword;
 using JobPortal.Service.Jobs;
 using JobPortal.Service.Roles;
 using Jobportel.Data;
@@ -45,7 +50,8 @@ namespace Jobportel
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("Conn")));
-            services.AddControllers();
+            services.AddControllers(option => option
+                   .Filters.Add(typeof(ExceptionFilter)));
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -74,7 +80,11 @@ namespace Jobportel
                 .AddScoped<IApplicantService, ApplicantService>()
                 .AddScoped<IJobService, JobService>()
                 .AddScoped<IJobRepositry, JobRepositry>()
-                .AddScoped<IEmailService, EmailService>();
+                .AddScoped<IEmailService, EmailService>()
+                .AddScoped<IOtpService, OtpService>()
+                .AddScoped<IOtpRepositry, OtpRepository>()
+                .AddScoped<IAdminService, AdminService>();
+                
             //services.AddSwaggerGen(c =>
             //{
             //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "JobPortal.Api", Version = "v1" });            

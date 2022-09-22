@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Jobportel.Data.Model;
+using JobPortal.Model.Model;
 
 namespace JobPortal.Api.Controllers
 {
@@ -21,37 +22,29 @@ namespace JobPortal.Api.Controllers
             _jobService = job;
         }
 
-        [HttpGet("Jobs")]
-        public async Task<IActionResult> GetJob()
+        [HttpPost("Jobs")]
+        public async Task<IActionResult> GetJob([FromBody] Pagination pagination)
         {
-            var Jobs = await _jobService.GetAll();
+            var Jobs = await _jobService.GetAll(pagination);
             return OkResponse("Success", Jobs);
         }
 
-        [HttpPost("Job/{id}")]
-        public async Task<IActionResult> GetById(int Id)
+        [HttpPost("{id}")]
+        public async Task<IActionResult> GetJobById(int Id)
         {
             Job job  = await _jobService.GetById(Id);
             return OkResponse("Sucess", job);
         }
 
-        [HttpPost("Add/Job")]
-        public async Task<IActionResult> Add(Job job)
-        {
-            job.CreatedBy = UserId;
-            await _jobService.Add(job);
-            return OkResponse("Sucess", job);
-        }
-
-        [HttpPut("UpdateRole")]
-        public async Task<IActionResult> Update(Job job)
+        [HttpPut("Update/Job")]
+        public async Task<IActionResult> UpdateJob(int id, [FromBody] Job job)
         {
             await _jobService.Update(job);
             return OkResponse("Sucess", job);
         }
 
-        [HttpDelete("DeleteUser")]
-        public async Task<IActionResult> Delete(int Id)
+        [HttpDelete("Job/{id}")]
+        public async Task<IActionResult> DeleteJob(int Id)
         {
             await _jobService.Delete(Id);
             return OkResponse("Sucess", Id);
